@@ -1,16 +1,18 @@
 "use client";
-import { useState } from "react";
+import { useState ,useEffect} from "react";
 import { 
   CarFront, 
   MapPin, 
   Clock, 
   Navigation, 
   Building2, 
-  ArrowRight ,Users,FileBarChart,DoorOpen,Key,Ruler,ShieldCheck,Ticket, Coins, Banknote, Receipt, Percent,UserCog, FileText,ShieldUser, User, Mail, Phone, GraduationCap, CheckCircle
+  ArrowRight ,Upload,Users,FileBarChart,DoorOpen,Key,Ruler,ShieldCheck,Ticket, Coins, Banknote, Receipt, Percent,UserCog, FileText,ShieldUser, User, Mail, Phone, GraduationCap, CheckCircle
 } from "lucide-react";
+import { useRef } from "react";
 
 export default function Page() {
   const [currentStep, setCurrentStep] = useState(1);
+const [isSubmitted, setIsSubmitted] = useState(false);
 
   // Placeholder for form data state
   const [formData, setFormData] = useState({
@@ -109,16 +111,102 @@ const handleFinalSubmit = async () => {
   const data = await res.json();
 
   if (data.success) {
-    alert("🎉 Lead Submitted Successfully!");
-    
+   setIsSubmitted(true)
+     setFormData({
+    locationName: "",
+    capacity: "",
+    waitTime: "",
+    mapsUrl: "",
+    latitude: "",
+    longitude: "",
+    timing: "",
+    address: "",
+
+    lobbies: "",
+    keyRooms: "",
+    distance: "",
+    supervisorUser: "no",
+    validationUser: "no",
+    reportUser: "no",
+
+    ticketType: "",
+    feeType: "",
+    ticketPricing: "",
+    vatType: "",
+
+    driverCount: "",
+    driverList: "",
+
+    adminName: "",
+    adminEmail: "",
+    adminPhone: "",
+    trainingRequired: "",
+
+    logoCompany: null,
+    logoClient: null,
+    vatCertificate: null,
+    tradeLicense: null,
+    documentSubmitMethod: ""
+  });
+
+  setCurrentStep(1);
     // Optional reset
     // window.location.reload();
   } else {
     alert("⚠️ Submission failed: " + data.message);
   }
 };
+useEffect(() => {
+  if (isSubmitted) {
+    const timer = setTimeout(() => {
+      setIsSubmitted(false);
+    }, 10000); // 10 seconds
 
+    return () => clearTimeout(timer);
+  }
+}, [isSubmitted]);
 
+const FileUploadBlock = ({ label, name, accept, file, setFormData }) => {
+  const fileRef = useRef(null);
+
+  return (
+    <div className="border rounded-lg p-4 bg-gray-50 flex flex-col gap-2">
+      <label className="text-sm font-medium text-gray-900">{label}</label>
+
+      {/* Hidden input */}
+      <input
+        ref={fileRef}
+        type="file"
+        accept={accept}
+        name={name}
+        onChange={(e) =>
+          setFormData((prev) => ({
+            ...prev,
+            [name]: e.target.files[0],
+          }))
+        }
+        className="hidden"
+      />
+
+      {/* Custom UI Button */}
+      <button
+        type="button"
+        onClick={() => fileRef.current.click()}
+        className="flex items-center justify-between border border-gray-300 bg-white rounded-lg px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition"
+      >
+        <span className="truncate">
+          {file ? `File selected: ${file.name}` : "No file chosen"}
+        </span>
+
+        {file ? (
+          <CheckCircle className="w-4 h-4 text-green-600" />
+        ) : (
+          <Upload className="w-4 h-4 text-gray-500" />
+        )}
+      </button>
+    </div>
+  );
+};
 
 
   return (
@@ -145,9 +233,47 @@ const handleFinalSubmit = async () => {
             Please share the details below so we can configure your valet parking automation and dashboard correctly from Day 1.
           </p>
         </div>
+        {/* ---- Step Tabs Navigation ---- */}
+<div className="w-full border-b pb-3">
+  <div className="flex items-center gap-3 overflow-x-auto no-scrollbar py-2">
+
+    {[
+      "Location",
+      "On-Site Users",
+      "Pricing",
+      "Drivers",
+      "Admin Setup",
+      "Documents"
+    ].map((step, index) => {
+      const stepNumber = index + 1;
+      const isActive = currentStep === stepNumber;
+      const isCompleted = currentStep > stepNumber;
+
+      return (
+        <button
+          key={step}
+          onClick={() => currentStep > stepNumber && setCurrentStep(stepNumber)}
+          className={`
+            whitespace-nowrap flex items-center gap-2 px-4 py-2 rounded-lg border transition-all text-xs sm:text-sm
+            ${isActive 
+              ? "border-[#ae5c83] text-[#ae5c83] bg-[#ae5c8315] font-semibold" 
+              : isCompleted 
+                ? "border-green-500 text-green-600 bg-green-100"
+                : "border-gray-300 text-gray-500 bg-white"
+            }
+          `}
+        >
+         {step}
+        </button>
+      );
+    })}
+
+  </div>
+
+</div>
 
         {/* PROGRESS INDICATOR */}
-        <div className="mb-8 border-b pb-4">
+        <div className="border-b pb-4">
             <p className="text-sm font-medium text-gray-500 uppercase tracking-wide">
                Step {currentStep} of 6
             </p>
@@ -158,6 +284,18 @@ const handleFinalSubmit = async () => {
                 ></div>
             </div>
         </div>
+        {isSubmitted ? (
+  // ✅ SUCCESS MESSAGE
+  <div className=" bg-green-200 mb-3 text-[#ae5c83] p-4 rounded-lg text-center shadow-md animate-in fade-in duration-500">
+    🎉 Congratulations! We’ve received your submission. 
+    <br />
+    Our team will review and contact you soon.
+  </div>
+) : (
+  <>
+    
+  </>
+)}
 
         {/* STEP 1: LOCATION INFORMATION */}
 {currentStep === 1 && (
@@ -818,91 +956,94 @@ const handleFinalSubmit = async () => {
 
         
 {currentStep === 6 && (
-  <div className="space-y-4 animate-in fade-in slide-in-from-right-8 duration-500">
+  <div className="space-y-5 animate-in fade-in slide-in-from-right-8 duration-500">
 
+    {/* Section Title */}
     <div>
-      <h2 className="text-lg sm:text-xl font-semibold text-gray-900">
+      <h2 className="text-xl font-semibold text-gray-900">
         📎 Required Documents
       </h2>
-      <p className="text-xs text-gray-500">Upload required files or submit later.</p>
+      <p className="text-xs text-gray-500">
+        Upload now or submit later via email/WhatsApp.
+      </p>
     </div>
 
+    {/* File Grid */}
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
       {/* COMPANY LOGO */}
-      <div className="flex flex-col gap-1">
-        <label className="text-sm font-medium text-gray-900">Company Logo (JPG/PNG)</label>
-        <input
-          type="file"
-          accept="image/png, image/jpeg"
-          name="logoCompany"
-          onChange={(e) => setFormData({ ...formData, logoCompany: e.target.files[0] })}
-          className="border border-gray-300 rounded-lg p-2 text-sm"
-        />
-      </div>
+      <FileUploadBlock 
+        label="Company Logo (JPG/PNG)"
+        name="logoCompany"
+        file={formData.logoCompany}
+        accept="image/png, image/jpeg"
+        setFormData={setFormData}
+      />
 
       {/* CLIENT LOGO */}
-      <div className="flex flex-col gap-1">
-        <label className="text-sm font-medium text-gray-900">Client Logo (JPG/PNG)</label>
-        <input
-          type="file"
-          accept="image/png, image/jpeg"
-          name="logoClient"
-          onChange={(e) => setFormData({ ...formData, logoClient: e.target.files[0] })}
-          className="border border-gray-300 rounded-lg p-2 text-sm"
-        />
-      </div>
+      <FileUploadBlock 
+        label="Client Logo (JPG/PNG)"
+        name="logoClient"
+        file={formData.logoClient}
+        accept="image/png, image/jpeg"
+        setFormData={setFormData}
+      />
 
       {/* VAT CERTIFICATE */}
-      <div className="flex flex-col gap-1">
-        <label className="text-sm font-medium text-gray-900">VAT Certificate (PDF)</label>
-        <input
-          type="file"
-          accept="application/pdf"
-          name="vatCertificate"
-          onChange={(e) => setFormData({ ...formData, vatCertificate: e.target.files[0] })}
-          className="border border-gray-300 rounded-lg p-2 text-sm"
-        />
-      </div>
+      <FileUploadBlock 
+        label="VAT Certificate (PDF)"
+        name="vatCertificate"
+        file={formData.vatCertificate}
+        accept="application/pdf"
+        setFormData={setFormData}
+      />
 
       {/* TRADE LICENSE */}
-      <div className="flex flex-col gap-1">
-        <label className="text-sm font-medium text-gray-900">Trade License (PDF)</label>
-        <input
-          type="file"
-          accept="application/pdf"
-          name="tradeLicense"
-          onChange={(e) => setFormData({ ...formData, tradeLicense: e.target.files[0] })}
-          className="border border-gray-300 rounded-lg p-2 text-sm"
-        />
-      </div>
+      <FileUploadBlock 
+        label="Trade License (PDF)"
+        name="tradeLicense"
+        file={formData.tradeLicense}
+        accept="application/pdf"
+        setFormData={setFormData}
+      />
+
     </div>
 
     {/* Notes Textarea */}
     <div>
-      <label className="text-sm font-medium text-gray-900">How will you submit remaining documents?</label>
+      <label className="text-sm font-medium text-gray-900">
+        How will you send documents?
+      </label>
+
       <textarea
         rows={3}
         name="documentSubmitMethod"
-        placeholder="Example: We will email remaining files within 24 hours."
+        placeholder="Example: We will email files within 24 hours."
         value={formData.documentSubmitMethod}
         onChange={handleChange}
-        className="w-full border border-gray-300 rounded-lg p-2 text-sm"
+        className="textarea"
       />
     </div>
 
     {/* Buttons */}
     <div className="flex justify-between pt-4">
-      <button onClick={() => setCurrentStep(prev => prev - 1)} className="text-gray-500 text-sm">
+      <button 
+        onClick={() => setCurrentStep(prev => prev - 1)}
+        className="text-gray-500 text-sm hover:text-gray-700"
+      >
         ← Back
       </button>
 
-      <button onClick={handleFinalSubmit} className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg text-sm">
-        Submit
+      <button 
+        onClick={handleFinalSubmit}
+        className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg text-sm shadow-sm"
+      >
+        Finish & Submit
       </button>
     </div>
   </div>
 )}
+
 
 
 

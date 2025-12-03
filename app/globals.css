@@ -55,6 +55,14 @@ body {
   font-weight: 400;
   opacity: 1;
 }
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
 
 
 /* Focus effect */
@@ -114,4 +122,18 @@ input[type="radio"] {
 
 input[type="radio"]:checked {
   accent-color: #ae5c83; /* active state color */
+}
+input[type="file"]::-webkit-file-upload-button {
+  background: #ae5c83;
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+
+input[type="file"] {
+  display: none;
 }
