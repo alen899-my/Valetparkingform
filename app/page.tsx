@@ -647,7 +647,7 @@ const FileUploadBlock = ({ label, name, accept, file, setFormData }) => {
               value="yes"
               checked={formData.supervisorUser === "yes"}
               onChange={handleChange}
-              className="w-4 h-4"
+              className="w-4 h-4 "
             />
             Yes
           </label>
