@@ -346,13 +346,13 @@ const FileUploadBlock = ({ label, name, accept, file, setFormData }) => {
 
   {/* Subtitle */}
   <p className="text-gray-500 text-xs sm:text-sm md:text-base max-w-2xl mx-auto leading-relaxed">
-    Please share the details below so we can configure your valet parking automation and dashboard correctly from Day 1.
+    Please share the details below so we can configure your valet parking automation.
   </p>
 </div>
 
         {/* ---- Step Tabs Navigation ---- */}
 <div className="w-full flex items-center justify-center py-2">
-  <div className="flex items-center  bg-white border rounded-2xl shadow-md p-2 overflow-x-auto no-scrollbar">
+  <div className="flex items-center bg-white border border-gray-300 rounded-lg shadow-md overflow-hidden no-scrollbar">
     
     {[
       { label: "Location", icon: <MapPin size={16} /> },
@@ -370,27 +370,26 @@ const FileUploadBlock = ({ label, name, accept, file, setFormData }) => {
         <button
           key={tab.label}
           onClick={() => validateBeforeJump(stepNumber)}
-          className={`flex items-center gap-2 px-5 py-2.5 
-          text-sm font-medium cursor-pointer whitespace-nowrap transition-all duration-300 ease-out
-          
-          ${
-            isActive
-              ? "bg-[#ae5c83] text-white shadow-md border border-transparent scale-105"
-              : isCompleted
-              ? "bg-green-00 text-gray-700 border border-gray-400 hover:bg-gray-200"
-              : "bg-gray-100 text-gray-600 border border-gray-300 hover:bg-gray-200"
-          }`}
+          className={`
+            flex items-center gap-2 px-5 py-2 text-sm font-medium whitespace-nowrap
+            transition-all duration-300 ease-out select-none 
+            ${
+              isActive
+                ? "bg-[#ae5c83] text-white"
+                : isCompleted
+                ? "text-gray-700 bg-transparent hover:bg-gray-100"
+                : "text-gray-500 bg-transparent hover:bg-gray-100"
+            }
+          `}
         >
-          <span className="flex items-center gap-2">
-            {tab.icon}
-            {tab.label}
-          </span>
+          <span className="flex items-center gap-2">{tab.icon}{tab.label}</span>
         </button>
       );
     })}
 
   </div>
 </div>
+
 
 {wizardError && (
   <div className="text-red-600 text-sm mb-3 bg-red-100 border border-red-300 px-3 py-2 rounded-lg">

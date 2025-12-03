@@ -121,6 +121,8 @@ body {
 input[type="radio"] {
   accent-color: #ae5c83;
   cursor: pointer;
+  border:1px solid gray;
+
 }
 
 /* File Upload Styling */
