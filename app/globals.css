@@ -1,17 +1,21 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Mono:wght@100..900&display=swap');
 @import "tailwindcss";
 
+/* Global Variables */
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --font-noto: "Noto Sans Mono", monospace;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-noto);
+  --font-mono: var(--font-noto);
 }
 
+/* Auto Dark Mode */
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
@@ -19,8 +23,95 @@
   }
 }
 
+/* Apply Font Globally */
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-noto);
+  font-optical-sizing: auto;
+}
+
+/* Reusable Input Styles */
+.input, .textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #b3b3b3;
+  border-radius: 10px;
+  background: #f9f9f9;
+  font-size: 15px;
+  color: #000;
+  transition: all 0.2s ease;
+}
+
+/* Hover */
+.input:hover, .textarea:hover {
+  border-color: #8a8a8a;
+}
+
+/* Placeholder visible */
+.input::placeholder,
+.textarea::placeholder {
+  color: #666;
+  font-weight: 400;
+  opacity: 1;
+}
+
+
+/* Focus effect */
+.input:focus,
+.textarea:focus {
+  border-color: #ae5c83;
+  outline: none;
+  background: white;
+  box-shadow: 0 0 0 3px rgba(174, 92, 131, 0.25);
+}
+
+/* Labels */
+.label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #000;
+  margin-bottom: 6px;
+  display: block;
+}
+
+/* Buttons matching theme */
+.btn-primary {
+  background: #ae5c83;
+  padding: 12px 20px;
+  border-radius: 10px;
+  color: white;
+  font-weight: 600;
+  font-size: 15px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  transition: 0.2s ease;
+}
+
+.btn-primary:hover {
+  background: #8f3e66;
+}
+
+
+/* Button Style */
+.btn-primary {
+  background: #ae5c83;
+  padding: 10px 18px;
+  border-radius: 10px;
+  color: white;
+  font-weight: bold;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  font-family: var(--font-noto);
+}
+/* --- GLOBAL RADIO STYLE --- */
+input[type="radio"] {
+  accent-color: #ae5c83; /* unselected + hover color */
+  cursor: pointer;
+}
+
+input[type="radio"]:checked {
+  accent-color: #ae5c83; /* active state color */
 }
