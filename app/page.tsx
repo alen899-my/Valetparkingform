@@ -13,6 +13,7 @@ import { useRef } from "react";
 export default function Page() {
   const [currentStep, setCurrentStep] = useState(1);
 const [isSubmitted, setIsSubmitted] = useState(false);
+const [wizardError, setWizardError] = useState("");
 const [errors, setErrors] = useState({
   locationName: "",
   capacity: "",
@@ -65,6 +66,22 @@ const [errors, setErrors] = useState({
   documentSubmitMethod: ""
 });
 
+const validateBeforeJump = (targetStep) => {
+  // going backwards = always allowed
+  if (targetStep < currentStep) {
+    setCurrentStep(targetStep);
+    return;
+  }
+
+  // otherwise check step-by-step
+  for (let step = currentStep; step < targetStep; step++) {
+    if (step === 1 && !validateStep1()) return;
+    if (step === 5 && !validateStep5()) return;
+    // Add step 2,3,4 validators here when you need them
+  }
+
+  setCurrentStep(targetStep);
+};
 
 
   // Handle form input changes
@@ -184,6 +201,17 @@ const validateStep1 = () => {
 
   return Object.keys(newErrors).length === 0;
 };
+const validateStep2 = () => {
+  return true; // No required fields yet, placeholder for future
+};
+
+const validateStep3 = () => {
+  return true; // No required fields yet
+};
+
+const validateStep4 = () => {
+  return true;
+};
 const validateStep5 = () => {
   let newErrors = {};
 
@@ -212,7 +240,7 @@ const validateStep5 = () => {
 
   return Object.keys(newErrors).length === 0;
 };
-
+const validateStep6 = () => true;
 const handleNext = () => {
   if (currentStep === 1 && !validateStep1()) return;
   if (currentStep === 5 && !validateStep5()) return;
@@ -263,7 +291,7 @@ const FileUploadBlock = ({ label, name, accept, file, setFormData }) => {
 
 
   return (
-    <div className="min-h-screen bg-gray-50 py-10 px-4 sm:px-6 flex justify-center">
+    <div className="min-h-fit bg-gray-50 py-10 px-4 sm:px-6 flex justify-center">
       <div className="w-full max-w-4xl bg-white rounded-2xl border border-slate-400 shadow-lg p-5 sm:p-8 md:p-10">
 
         {/* HEADER */}
@@ -306,8 +334,7 @@ const FileUploadBlock = ({ label, name, accept, file, setFormData }) => {
       return (
         <button
           key={step}
-          onClick={() => setCurrentStep(stepNumber)}
-
+           onClick={() => validateBeforeJump(stepNumber)}
           className={`snap-start
             whitespace-nowrap flex items-center gap-2 px-4 py-2 rounded-lg border transition-all text-xs sm:text-sm
             ${isActive 
@@ -326,6 +353,11 @@ const FileUploadBlock = ({ label, name, accept, file, setFormData }) => {
   </div>
 
 </div>
+{wizardError && (
+  <div className="text-red-600 text-sm mb-3 bg-red-100 border border-red-300 px-3 py-2 rounded-lg">
+    ⚠️ {wizardError}
+  </div>
+)}
 
         {/* PROGRESS INDICATOR */}
         <div className="border-b pb-4">
