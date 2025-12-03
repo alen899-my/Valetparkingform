@@ -13,6 +13,10 @@ import { useRef } from "react";
 export default function Page() {
   const [currentStep, setCurrentStep] = useState(1);
 const [isSubmitted, setIsSubmitted] = useState(false);
+const [errors, setErrors] = useState({
+  locationName: "",
+  capacity: "",
+});
 
   // Placeholder for form data state
   const [formData, setFormData] = useState({
@@ -59,10 +63,7 @@ const [isSubmitted, setIsSubmitted] = useState(false);
 });
 
 
-  const handleNext = () => {
-    // You can add validation here before moving to next step
-    setCurrentStep((prev) => prev + 1);
-  };
+
   // Handle form input changes
 const handleChange = (e) => {
   const { name, value, type, files } = e.target;
@@ -165,6 +166,26 @@ useEffect(() => {
     return () => clearTimeout(timer);
   }
 }, [isSubmitted]);
+const validateStep1 = () => {
+  let newErrors = {};
+
+  if (!formData.locationName.trim()) {
+    newErrors.locationName = "Location name is required.";
+  }
+
+  if (!formData.capacity.trim()) {
+    newErrors.capacity = "Parking capacity is required.";
+  }
+
+  setErrors(newErrors);
+
+  return Object.keys(newErrors).length === 0;
+};
+
+const handleNext = () => {
+  if (currentStep === 1 && !validateStep1()) return;
+  setCurrentStep(prev => prev + 1);
+};
 
 const FileUploadBlock = ({ label, name, accept, file, setFormData }) => {
   const fileRef = useRef(null);
@@ -328,9 +349,15 @@ const FileUploadBlock = ({ label, name, accept, file, setFormData }) => {
           name="locationName"
           placeholder="e.g. Grand Hyatt Dubai - Main Entrance"
           value={formData.locationName}
-          onChange={(e) => setFormData({ ...formData, locationName: e.target.value })}
-          className="input"
+          onChange={(e) => {
+            setFormData({ ...formData, locationName: e.target.value });
+            setErrors({ ...errors, locationName: "" }); // remove error live
+          }}
+          className={`input ${errors.locationName ? "border-red-500" : ""}`}
         />
+        {errors.locationName && (
+          <small className="text-red-500 text-xs">{errors.locationName}</small>
+        )}
       </div>
 
       {/* Parking Capacity */}
@@ -343,9 +370,15 @@ const FileUploadBlock = ({ label, name, accept, file, setFormData }) => {
           name="capacity"
           placeholder="Total number of parking slots"
           value={formData.capacity}
-          onChange={(e) => setFormData({ ...formData, capacity: e.target.value })}
-          className="input"
+          onChange={(e) => {
+            setFormData({ ...formData, capacity: e.target.value });
+            setErrors({ ...errors, capacity: "" });
+          }}
+          className={`input ${errors.capacity ? "border-red-500" : ""}`}
         />
+        {errors.capacity && (
+          <small className="text-red-500 text-xs">{errors.capacity}</small>
+        )}
       </div>
 
       {/* Waiting Time */}
@@ -433,18 +466,12 @@ const FileUploadBlock = ({ label, name, accept, file, setFormData }) => {
     {/* Navigation */}
     <div className="pt-2 flex justify-end">
       <button
-        onClick={() => {
-          if (!formData.locationName || !formData.capacity) {
-            alert("Please fill required fields.");
-            return;
-          }
-          handleNext();
-        }}
-        className="btn-primary flex items-center gap-2"
-      >
-        Next Step
-        <ArrowRight className="w-4 h-4" />
-      </button>
+  onClick={handleNext}
+  className="btn-primary flex items-center gap-2"
+>
+  Next Step
+  <ArrowRight className="w-4 h-4" />
+</button>
     </div>
   </div>
 )}
