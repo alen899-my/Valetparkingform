@@ -817,115 +817,94 @@ const handleFinalSubmit = async () => {
 
 
         
+{currentStep === 6 && (
+  <div className="space-y-4 animate-in fade-in slide-in-from-right-8 duration-500">
 
-    {currentStep === 6 && (
-    <div className="space-y-6 animate-in fade-in slide-in-from-right-8 duration-500">
-
-    {/* Section Heading */}
-    <div className="space-y-1">
-      <h2 className="text-xl font-semibold text-gray-900 flex items-center gap-2">
-        📎 Required Documents (Upload / Email)
+    <div>
+      <h2 className="text-lg sm:text-xl font-semibold text-gray-900">
+        📎 Required Documents
       </h2>
-      <p className="text-sm text-gray-500">
-        Attach files now or indicate how you will submit them.
-      </p>
+      <p className="text-xs text-gray-500">Upload required files or submit later.</p>
     </div>
 
-    {/* Checklist */}
-    <div className="p-4 bg-gray-50 border border-gray-200 rounded-lg space-y-3">
-      <h3 className="font-medium text-gray-900">Documents Checklist</h3>
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
-      <ul className="text-sm text-gray-700 space-y-2">
-        <li>• Company logo</li>
-        <li>• Client logo</li>
-        <li>• VAT Certificate</li>
-        <li>• Trade License</li>
-      </ul>
-
-      <p className="text-xs text-gray-500 mt-2">
-        Upload now or send later via email/WhatsApp.
-      </p>
-    </div>
-
-    {/* File Uploads */}
-    <div className="space-y-5">
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Upload Company Logo</label>
-        <input 
-          type="file" 
+      {/* COMPANY LOGO */}
+      <div className="flex flex-col gap-1">
+        <label className="text-sm font-medium text-gray-900">Company Logo (JPG/PNG)</label>
+        <input
+          type="file"
+          accept="image/png, image/jpeg"
           name="logoCompany"
           onChange={(e) => setFormData({ ...formData, logoCompany: e.target.files[0] })}
-          className="border border-gray-300 rounded-md w-full p-2 text-black"
+          className="border border-gray-300 rounded-lg p-2 text-sm"
         />
       </div>
 
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Upload Client Logo</label>
-        <input 
-          type="file" 
+      {/* CLIENT LOGO */}
+      <div className="flex flex-col gap-1">
+        <label className="text-sm font-medium text-gray-900">Client Logo (JPG/PNG)</label>
+        <input
+          type="file"
+          accept="image/png, image/jpeg"
           name="logoClient"
           onChange={(e) => setFormData({ ...formData, logoClient: e.target.files[0] })}
-          className="border border-gray-300 rounded-md w-full p-2 text-black"
+          className="border border-gray-300 rounded-lg p-2 text-sm"
         />
       </div>
 
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">VAT Certificate</label>
-        <input 
-          type="file" 
+      {/* VAT CERTIFICATE */}
+      <div className="flex flex-col gap-1">
+        <label className="text-sm font-medium text-gray-900">VAT Certificate (PDF)</label>
+        <input
+          type="file"
+          accept="application/pdf"
           name="vatCertificate"
           onChange={(e) => setFormData({ ...formData, vatCertificate: e.target.files[0] })}
-          className="border border-gray-300 rounded-md w-full p-2 text-black"
+          className="border border-gray-300 rounded-lg p-2 text-sm"
         />
       </div>
 
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Trade License</label>
-        <input 
-          type="file" 
+      {/* TRADE LICENSE */}
+      <div className="flex flex-col gap-1">
+        <label className="text-sm font-medium text-gray-900">Trade License (PDF)</label>
+        <input
+          type="file"
+          accept="application/pdf"
           name="tradeLicense"
           onChange={(e) => setFormData({ ...formData, tradeLicense: e.target.files[0] })}
-          className="border border-gray-300 rounded-md w-full p-2 text-black"
+          className="border border-gray-300 rounded-lg p-2 text-sm"
         />
       </div>
     </div>
 
-    {/* Text Area */}
+    {/* Notes Textarea */}
     <div>
-      <label className="block text-sm font-medium text-gray-700 mb-2">
-        How will you submit documents? <span className="text-red-500">*</span>
-      </label>
-
+      <label className="text-sm font-medium text-gray-900">How will you submit remaining documents?</label>
       <textarea
+        rows={3}
         name="documentSubmitMethod"
-        rows={4}
-        placeholder="Example: We will email all documents in 24 hours."
+        placeholder="Example: We will email remaining files within 24 hours."
         value={formData.documentSubmitMethod}
         onChange={handleChange}
-        className="w-full px-4 py-2 border border-gray-300 rounded-lg text-black focus:ring-2 focus:ring-[#ae5c83] outline-none transition-all"
+        className="w-full border border-gray-300 rounded-lg p-2 text-sm"
       />
     </div>
 
     {/* Buttons */}
-    <div className="pt-6 flex justify-between">
-      <button
-        onClick={() => setCurrentStep(prev => prev - 1)}
-        className="text-gray-500 hover:text-gray-700 font-medium px-4 py-2 transition-colors"
-      >
+    <div className="flex justify-between pt-4">
+      <button onClick={() => setCurrentStep(prev => prev - 1)} className="text-gray-500 text-sm">
         ← Back
       </button>
 
-      <button
-        onClick={handleFinalSubmit}
-        className="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-8 py-2.5 rounded-lg font-medium transition-colors shadow-sm"
-      >
-        Finish & Submit
-        <CheckCircle className="w-4 h-4" />
+      <button onClick={handleFinalSubmit} className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg text-sm">
+        Submit
       </button>
     </div>
-
   </div>
 )}
+
+
 
 
       </div>

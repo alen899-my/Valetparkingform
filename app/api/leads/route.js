@@ -1,6 +1,7 @@
 import { connectDB } from "@/lib/mongodb";
 import Lead from "@/models/Lead";
 import { GridFSBucket } from "mongodb";
+import { NextResponse } from "next/server";
 
 export async function POST(req) {
   try {
@@ -11,43 +12,54 @@ export async function POST(req) {
       bucketName: "uploads",
     });
 
-    const uploadedFiles = {};
+    const attachments = [];
 
-    // upload file fields
+    const allowedImageTypes = ["image/png", "image/jpeg"];
+    const allowedPdfTypes = ["application/pdf"];
+
     const fileFields = ["companyLogo", "clientLogo", "vatCertificate", "tradeLicense"];
 
     for (const field of fileFields) {
       const file = formData.get(field);
 
       if (file && typeof file !== "string") {
-        const bytes = await file.arrayBuffer();
-        const buffer = Buffer.from(bytes);
+        if (
+          (field.includes("Logo") && !allowedImageTypes.includes(file.type)) ||
+          (["vatCertificate", "tradeLicense"].includes(field) && !allowedPdfTypes.includes(file.type))
+        ) {
+          return NextResponse.json(
+            { success: false, message: `${field} format not allowed.` },
+            { status: 400 }
+          );
+        }
 
+        const buffer = Buffer.from(await file.arrayBuffer());
         const uploadStream = bucket.openUploadStream(file.name);
         uploadStream.end(buffer);
 
-        uploadedFiles[field] = uploadStream.id.toString();
+        attachments.push({
+          fieldname: field,
+          filename: file.name,
+          fileId: uploadStream.id,
+        });
       }
     }
 
-    // save text fields
     const leadData = {};
+
     formData.forEach((value, key) => {
       if (!fileFields.includes(key)) leadData[key] = value;
     });
 
-    // attach file references
-    Object.assign(leadData, uploadedFiles);
+    const newLead = await Lead.create({
+      ...leadData,
+      attachments,
+    });
 
-    const newLead = await Lead.create(leadData);
-
-    return Response.json({ success: true, lead: newLead }, { status: 201 });
+    return NextResponse.json({ success: true, lead: newLead }, { status: 201 });
 
   } catch (error) {
-    console.error("❌ API Error:", error);
-    return Response.json(
-      { success: false, error: error.message },
-      { status: 500 }
-    );
+    console.error("❌ API ERROR:", error);
+    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
   }
 }
