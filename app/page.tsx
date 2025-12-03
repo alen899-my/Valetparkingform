@@ -35,7 +35,7 @@ const [isSubmitted, setIsSubmitted] = useState(false);
   reportUser: "no",
 
   // STEP 3
-  ticketType: "",
+  ticketType: "pre-printed",
   feeType: "",
   ticketPricing: "",
   vatType: "",
@@ -129,7 +129,7 @@ const handleFinalSubmit = async () => {
     validationUser: "no",
     reportUser: "no",
 
-    ticketType: "",
+    ticketType: "pre-printed",
     feeType: "",
     ticketPricing: "",
     vatType: "",
@@ -170,7 +170,7 @@ const FileUploadBlock = ({ label, name, accept, file, setFormData }) => {
   const fileRef = useRef(null);
 
   return (
-    <div className="border rounded-lg p-4 bg-gray-50 flex flex-col gap-2">
+    <div className="border rounded-lg p-2 bg-gray-50 flex flex-col gap-2">
       <label className="text-sm font-medium text-gray-900">{label}</label>
 
       {/* Hidden input */}
@@ -214,7 +214,7 @@ const FileUploadBlock = ({ label, name, accept, file, setFormData }) => {
       <div className="w-full max-w-4xl bg-white rounded-2xl border border-slate-400 shadow-lg p-5 sm:p-8 md:p-10">
 
         {/* HEADER */}
-        <div className="text-center space-y-4 mb-10">
+        <div className="text-center space-y-2 mb-4">
           {/* Eyebrow Label */}
           <div className="flex items-center justify-center">
             <p className="uppercase text-xs sm:text-sm tracking-wider font-semibold text-[#ae5c83] bg-[#ae5c83]/10 px-3 py-1 rounded-md">
@@ -235,7 +235,8 @@ const FileUploadBlock = ({ label, name, accept, file, setFormData }) => {
         </div>
         {/* ---- Step Tabs Navigation ---- */}
 <div className="w-full border-b pb-3">
-  <div className="flex items-center gap-3 overflow-x-auto no-scrollbar py-2">
+  <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-2 scroll-smooth snap-x">
+
 
     {[
       "Location",
@@ -252,8 +253,9 @@ const FileUploadBlock = ({ label, name, accept, file, setFormData }) => {
       return (
         <button
           key={step}
-          onClick={() => currentStep > stepNumber && setCurrentStep(stepNumber)}
-          className={`
+          onClick={() => setCurrentStep(stepNumber)}
+
+          className={`snap-start
             whitespace-nowrap flex items-center gap-2 px-4 py-2 rounded-lg border transition-all text-xs sm:text-sm
             ${isActive 
               ? "border-[#ae5c83] text-[#ae5c83] bg-[#ae5c8315] font-semibold" 
@@ -299,7 +301,7 @@ const FileUploadBlock = ({ label, name, accept, file, setFormData }) => {
 
         {/* STEP 1: LOCATION INFORMATION */}
 {currentStep === 1 && (
-  <div className="space-y-5 animate-in fade-in slide-in-from-bottom-4 duration-500">
+  <div className="space-y-3 animate-in fade-in slide-in-from-bottom-4 duration-500">
 
     {/* Section Heading */}
     <div>
@@ -753,7 +755,7 @@ const FileUploadBlock = ({ label, name, accept, file, setFormData }) => {
 
       {/* STEP 4: DRIVERS / CVA TEAM */}
 {currentStep === 4 && (
-  <div className="space-y-6 animate-in fade-in slide-in-from-right-8 duration-500">
+  <div className="space-y-3 animate-in fade-in slide-in-from-right-8 duration-500">
     
     {/* Section Heading */}
     <div className="space-y-1">
@@ -837,7 +839,7 @@ const FileUploadBlock = ({ label, name, accept, file, setFormData }) => {
         {/* STEP 5: SUPER ADMIN CONTACT */}
      {/* STEP 5: SUPER ADMIN CONTACT */}
 {currentStep === 5 && (
-  <div className="space-y-6 animate-in fade-in slide-in-from-right-8 duration-500">
+  <div className="space-y-3 animate-in fade-in slide-in-from-right-8 duration-500">
 
     {/* Section Heading */}
     <div className="space-y-1">
@@ -868,7 +870,7 @@ const FileUploadBlock = ({ label, name, accept, file, setFormData }) => {
     {/* Email */}
     <div>
       <label className="block text-sm font-medium text-gray-700 mb-1">
-        Email Address *
+        Email Address <span className="text-red-500">*</span>
       </label>
       <input 
         type="email"
@@ -883,7 +885,7 @@ const FileUploadBlock = ({ label, name, accept, file, setFormData }) => {
     {/* Phone */}
     <div>
       <label className="block text-sm font-medium text-gray-700 mb-1">
-        Mobile / WhatsApp Number *
+        Mobile / WhatsApp Number <span className="text-red-500">*</span>
       </label>
       <input 
         type="tel"
@@ -897,7 +899,7 @@ const FileUploadBlock = ({ label, name, accept, file, setFormData }) => {
 
     {/* Training Radio */}
     <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
-      <label className="block text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
+      <label className="block font-medium text-gray-700 mb-3 flex items-center gap-2">
        
         Super admin will receive full application training
       </label>
@@ -956,7 +958,7 @@ const FileUploadBlock = ({ label, name, accept, file, setFormData }) => {
 
         
 {currentStep === 6 && (
-  <div className="space-y-5 animate-in fade-in slide-in-from-right-8 duration-500">
+  <div className="space-y-3 animate-in fade-in slide-in-from-right-8 duration-500">
 
     {/* Section Title */}
     <div>
@@ -969,7 +971,7 @@ const FileUploadBlock = ({ label, name, accept, file, setFormData }) => {
     </div>
 
     {/* File Grid */}
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
 
       {/* COMPANY LOGO */}
       <FileUploadBlock 

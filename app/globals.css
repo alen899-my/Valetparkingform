@@ -63,6 +63,9 @@ body {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+.scroll-smooth {
+  scroll-behavior: smooth;
+}
 
 
 /* Focus effect */
