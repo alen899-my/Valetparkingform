@@ -16,6 +16,9 @@ const [isSubmitted, setIsSubmitted] = useState(false);
 const [errors, setErrors] = useState({
   locationName: "",
   capacity: "",
+  adminName: "",
+  adminEmail: "",
+  adminPhone: "",
 });
 
   // Placeholder for form data state
@@ -181,9 +184,38 @@ const validateStep1 = () => {
 
   return Object.keys(newErrors).length === 0;
 };
+const validateStep5 = () => {
+  let newErrors = {};
+
+  // Name Required
+  if (!formData.adminName.trim()) {
+    newErrors.adminName = "Full name is required.";
+  }
+
+  // Email Validation
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!formData.adminEmail.trim()) {
+    newErrors.adminEmail = "Email is required.";
+  } else if (!emailRegex.test(formData.adminEmail.trim())) {
+    newErrors.adminEmail = "Enter a valid email address.";
+  }
+
+  // Phone validation (digits only 8–14)
+  const phoneClean = formData.adminPhone.replace(/\D/g, ""); // remove spaces + symbols
+  if (!formData.adminPhone.trim()) {
+    newErrors.adminPhone = "Phone number is required.";
+  } else if (phoneClean.length < 8 || phoneClean.length > 14) {
+    newErrors.adminPhone = "Phone number must be 8–14 digits.";
+  }
+
+  setErrors(newErrors);
+
+  return Object.keys(newErrors).length === 0;
+};
 
 const handleNext = () => {
   if (currentStep === 1 && !validateStep1()) return;
+  if (currentStep === 5 && !validateStep5()) return;
   setCurrentStep(prev => prev + 1);
 };
 
@@ -863,7 +895,7 @@ const FileUploadBlock = ({ label, name, accept, file, setFormData }) => {
   </div>
 )}
 
-        {/* STEP 5: SUPER ADMIN CONTACT */}
+      
      {/* STEP 5: SUPER ADMIN CONTACT */}
 {currentStep === 5 && (
   <div className="space-y-3 animate-in fade-in slide-in-from-right-8 duration-500">
@@ -889,9 +921,13 @@ const FileUploadBlock = ({ label, name, accept, file, setFormData }) => {
         name="adminName"
         placeholder="e.g., Ayush Aggarwal"
         value={formData.adminName}
-        onChange={handleChange}
-        className="w-full px-4 py-2 border border-gray-300 rounded-lg text-black focus:ring-2 focus:ring-[#ae5c83] outline-none transition-all"
+        onChange={(e) => {
+          setFormData({ ...formData, adminName: e.target.value });
+          setErrors(prev => ({ ...prev, adminName: "" }));
+        }}
+        className={`input ${errors.adminName ? "border-red-500" : ""}`}
       />
+      {errors.adminName && <p className="text-xs text-red-500">{errors.adminName}</p>}
     </div>
 
     {/* Email */}
@@ -899,14 +935,18 @@ const FileUploadBlock = ({ label, name, accept, file, setFormData }) => {
       <label className="block text-sm font-medium text-gray-700 mb-1">
         Email Address <span className="text-red-500">*</span>
       </label>
-      <input 
+       <input 
         type="email"
         name="adminEmail"
         placeholder="e.g., ayush@example.com"
         value={formData.adminEmail}
-        onChange={handleChange}
-        className="w-full px-4 py-2 border border-gray-300 rounded-lg text-black focus:ring-2 focus:ring-[#ae5c83] outline-none transition-all"
+        onChange={(e) => {
+          setFormData({ ...formData, adminEmail: e.target.value });
+          setErrors(prev => ({ ...prev, adminEmail: "" }));
+        }}
+        className={`input ${errors.adminEmail ? "border-red-500" : ""}`}
       />
+      {errors.adminEmail && <p className="text-xs text-red-500">{errors.adminEmail}</p>}
     </div>
 
     {/* Phone */}
@@ -914,14 +954,18 @@ const FileUploadBlock = ({ label, name, accept, file, setFormData }) => {
       <label className="block text-sm font-medium text-gray-700 mb-1">
         Mobile / WhatsApp Number <span className="text-red-500">*</span>
       </label>
-      <input 
+     <input 
         type="tel"
         name="adminPhone"
         placeholder="e.g., +971 52 123 4567"
         value={formData.adminPhone}
-        onChange={handleChange}
-        className="w-full px-4 py-2 border border-gray-300 rounded-lg text-black focus:ring-2 focus:ring-[#ae5c83] outline-none transition-all"
+        onChange={(e) => {
+          setFormData({ ...formData, adminPhone: e.target.value });
+          setErrors(prev => ({ ...prev, adminPhone: "" }));
+        }}
+        className={`input ${errors.adminPhone ? "border-red-500" : ""}`}
       />
+      {errors.adminPhone && <p className="text-xs text-red-500">{errors.adminPhone}</p>}
     </div>
 
     {/* Training Radio */}
