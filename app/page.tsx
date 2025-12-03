@@ -316,7 +316,7 @@ const FileUploadBlock = ({ label, name, accept, file, setFormData }) => {
 
 
   return (
-    <div className="min-h-screen bg-gray-50 py-10 px-4 sm:px-6 flex justify-center">
+    <div className="min-h-fit bg-gray-50 py-10 px-4 sm:px-6 flex justify-center">
       <div className="w-full max-w-4xl bg-white rounded-2xl border border-slate-400 shadow-lg p-5 sm:p-8 md:p-10">
 
         {/* HEADER */}
@@ -352,8 +352,15 @@ const FileUploadBlock = ({ label, name, accept, file, setFormData }) => {
 
         {/* ---- Step Tabs Navigation ---- */}
 <div className="w-full flex items-center justify-center py-2">
-  <div className="flex items-center bg-white border border-gray-300 rounded-lg shadow-md overflow-hidden no-scrollbar">
-    
+  {/* Scroll wrapper */}
+  <div className="
+    flex gap-1 overflow-x-auto no-scrollbar scroll-smooth 
+    rounded-lg border border-gray-300 bg-white shadow-md px-2 py-1
+  "
+    style={{
+      WebkitOverflowScrolling: "touch",
+    }}
+  >
     {[
       { label: "Location", icon: <MapPin size={16} /> },
       { label: "On-Site Users", icon: <Users size={16} /> },
@@ -371,24 +378,24 @@ const FileUploadBlock = ({ label, name, accept, file, setFormData }) => {
           key={tab.label}
           onClick={() => validateBeforeJump(stepNumber)}
           className={`
-            flex items-center gap-2 px-5 py-2 text-sm font-medium whitespace-nowrap
-            transition-all duration-300 ease-out select-none 
+            flex items-center gap-2 px-5 py-2 text-sm font-medium whitespace-nowrap rounded-md
+            transition-all duration-300 ease-out select-none
             ${
               isActive
-                ? "bg-[#ae5c83] text-white"
+                ? "bg-[#ae5c83] text-white shadow-md scale-[1.05]"
                 : isCompleted
-                ? "text-gray-700 bg-transparent hover:bg-gray-100"
-                : "text-gray-500 bg-transparent hover:bg-gray-100"
+                ? "text-gray-600 bg-gray-100 hover:bg-gray-200"
+                : "text-gray-600 bg-gray-100 hover:bg-gray-200"
             }
           `}
         >
-          <span className="flex items-center gap-2">{tab.icon}{tab.label}</span>
+          {tab.icon} {tab.label}
         </button>
       );
     })}
-
   </div>
 </div>
+
 
 
 {wizardError && (
