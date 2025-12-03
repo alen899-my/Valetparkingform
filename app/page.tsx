@@ -44,9 +44,9 @@ const [errors, setErrors] = useState({
 
   // STEP 3
   ticketType: "pre-printed",
-  feeType: "",
+  feeType: "fixed",
   ticketPricing: "",
-  vatType: "",
+  vatType: "inclusive",
 
   // STEP 4
   driverCount: "",
@@ -56,7 +56,7 @@ const [errors, setErrors] = useState({
   adminName: "",
   adminEmail: "",
   adminPhone: "",
-  trainingRequired: "",
+  trainingRequired: "yes",
 
   // STEP 6 (attachments & text)
   logoCompany: null,
@@ -67,21 +67,32 @@ const [errors, setErrors] = useState({
 });
 
 const validateBeforeJump = (targetStep) => {
-  // going backwards = always allowed
   if (targetStep < currentStep) {
+    setWizardError("");
     setCurrentStep(targetStep);
     return;
   }
 
-  // otherwise check step-by-step
+  const validations = {
+    1: validateStep1,
+    2: validateStep2,
+    3: validateStep3,
+    4: validateStep4,
+    5: validateStep5,
+    6: validateStep6,
+  };
+
   for (let step = currentStep; step < targetStep; step++) {
-    if (step === 1 && !validateStep1()) return;
-    if (step === 5 && !validateStep5()) return;
-    // Add step 2,3,4 validators here when you need them
+    if (!validations[step]()) {
+      setWizardError("Please finish the required fields before moving ahead.");
+      return;
+    }
   }
 
+  setWizardError("");
   setCurrentStep(targetStep);
 };
+
 
 
   // Handle form input changes
@@ -146,11 +157,11 @@ const handleFinalSubmit = async () => {
     lobbies: "",
     keyRooms: "",
     distance: "",
-    supervisorUser: "no",
-    validationUser: "no",
-    reportUser: "no",
+    supervisorUser: "",
+    validationUser: "",
+    reportUser: "",
 
-    ticketType: "pre-printed",
+    ticketType: "",
     feeType: "",
     ticketPricing: "",
     vatType: "",
@@ -228,7 +239,7 @@ const validateStep5 = () => {
     newErrors.adminEmail = "Enter a valid email address.";
   }
 
-  // Phone validation (digits only 8–14)
+  
   const phoneClean = formData.adminPhone.replace(/\D/g, ""); // remove spaces + symbols
   if (!formData.adminPhone.trim()) {
     newErrors.adminPhone = "Phone number is required.";
@@ -242,10 +253,24 @@ const validateStep5 = () => {
 };
 const validateStep6 = () => true;
 const handleNext = () => {
-  if (currentStep === 1 && !validateStep1()) return;
-  if (currentStep === 5 && !validateStep5()) return;
+  const validations = {
+    1: validateStep1,
+    2: validateStep2,
+    3: validateStep3,
+    4: validateStep4,
+    5: validateStep5,
+    6: validateStep6,
+  };
+
+  if (!validations[currentStep]()) {
+    setWizardError("Please complete required fields before continuing.");
+    return;
+  }
+
+  setWizardError(""); // Clear if valid
   setCurrentStep(prev => prev + 1);
 };
+
 
 const FileUploadBlock = ({ label, name, accept, file, setFormData }) => {
   const fileRef = useRef(null);
@@ -291,68 +316,82 @@ const FileUploadBlock = ({ label, name, accept, file, setFormData }) => {
 
 
   return (
-    <div className="min-h-fit bg-gray-50 py-10 px-4 sm:px-6 flex justify-center">
+    <div className="min-h-screen bg-gray-50 py-10 px-4 sm:px-6 flex justify-center">
       <div className="w-full max-w-4xl bg-white rounded-2xl border border-slate-400 shadow-lg p-5 sm:p-8 md:p-10">
 
         {/* HEADER */}
-        <div className="text-center space-y-2 mb-4">
-          {/* Eyebrow Label */}
-          <div className="flex items-center justify-center">
-            <p className="uppercase text-xs sm:text-sm tracking-wider font-semibold text-[#ae5c83] bg-[#ae5c83]/10 px-3 py-1 rounded-md">
-              New Valet Parking Lead – Free Signup
-            </p>
-          </div>
+<div className="text-center space-y- mb-2">
 
-          {/* Main Heading */}
-          <h1 className="flex flex-col sm:flex-row items-center justify-center gap-2 text-xl sm:text-2xl md:text-3xl font-semibold text-gray-900 leading-tight">
-            <CarFront className="w-7 h-7 sm:w-8 sm:h-8 text-black" strokeWidth={2} />
-            <span className="text-center">Client Onboarding & Location Setup Form</span>
-          </h1>
+  {/* Logo */}
+  <div className="flex justify-center">
+    <img 
+      src="/logo.png" // <-- change to your logo path
+      alt="Valet Lead Logo"
+      className="w-20 sm:w-24 md:w-58 object-contain drop-shadow-md"
+    />
+  </div>
 
-          {/* Subtitle */}
-          <p className="text-gray-500 text-sm sm:text-base max-w-2xl mx-auto leading-relaxed">
-            Please share the details below so we can configure your valet parking automation and dashboard correctly from Day 1.
-          </p>
-        </div>
+  {/* Eyebrow Label */}
+  <div className="flex items-center justify-center">
+    <p className="uppercase text-xs sm:text-sm tracking-wider font-semibold text-[#ae5c83] bg-[#ae5c83]/10 px-3 py-1 rounded-md">
+      New Valet Parking Lead – Free Signup
+    </p>
+  </div>
+
+  {/* Main Heading */}
+  <h1 className="flex flex-col sm:flex-row items-center justify-center gap-2 text-xl sm:text-2xl md:text-3xl font-semibold text-gray-900 leading-tight">
+    <CarFront className="w-7 h-8 sm:w-8 sm:h-8 text-[#ae5c83]" strokeWidth={2} />
+    <span className="text-center">Client Onboarding & Location Setup Form</span>
+  </h1>
+
+  {/* Subtitle */}
+  <p className="text-gray-500 text-xs sm:text-sm md:text-base max-w-2xl mx-auto leading-relaxed">
+    Please share the details below so we can configure your valet parking automation and dashboard correctly from Day 1.
+  </p>
+</div>
+
         {/* ---- Step Tabs Navigation ---- */}
-<div className="w-full border-b pb-3">
-  <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-2 scroll-smooth snap-x">
-
-
+<div className="w-full flex items-center justify-center py-2">
+  <div className="flex items-center  bg-white border rounded-2xl shadow-md p-2 overflow-x-auto no-scrollbar">
+    
     {[
-      "Location",
-      "On-Site Users",
-      "Pricing",
-      "Drivers",
-      "Admin Setup",
-      "Documents"
-    ].map((step, index) => {
+      { label: "Location", icon: <MapPin size={16} /> },
+      { label: "On-Site Users", icon: <Users size={16} /> },
+      { label: "Pricing", icon: <Coins size={16} /> },
+      { label: "Drivers", icon: <CarFront size={16} /> },
+      { label: "Admin Setup", icon: <UserCog size={16} /> },
+      { label: "Documents", icon: <FileText size={16} /> },
+    ].map((tab, index) => {
       const stepNumber = index + 1;
       const isActive = currentStep === stepNumber;
       const isCompleted = currentStep > stepNumber;
 
       return (
         <button
-          key={step}
-           onClick={() => validateBeforeJump(stepNumber)}
-          className={`snap-start
-            whitespace-nowrap flex items-center gap-2 px-4 py-2 rounded-lg border transition-all text-xs sm:text-sm
-            ${isActive 
-              ? "border-[#ae5c83] text-[#ae5c83] bg-[#ae5c8315] font-semibold" 
-              : isCompleted 
-                ? "border-green-500 text-green-600 bg-green-100"
-                : "border-gray-300 text-gray-500 bg-white"
-            }
-          `}
+          key={tab.label}
+          onClick={() => validateBeforeJump(stepNumber)}
+          className={`flex items-center gap-2 px-5 py-2.5 
+          text-sm font-medium cursor-pointer whitespace-nowrap transition-all duration-300 ease-out
+          
+          ${
+            isActive
+              ? "bg-[#ae5c83] text-white shadow-md border border-transparent scale-105"
+              : isCompleted
+              ? "bg-green-100 text-green-700 border border-green-400 hover:bg-green-200"
+              : "bg-gray-100 text-gray-600 border border-gray-300 hover:bg-gray-200"
+          }`}
         >
-         {step}
+          <span className="flex items-center gap-2">
+            {tab.icon}
+            {tab.label}
+          </span>
         </button>
       );
     })}
 
   </div>
-
 </div>
+
 {wizardError && (
   <div className="text-red-600 text-sm mb-3 bg-red-100 border border-red-300 px-3 py-2 rounded-lg">
     ⚠️ {wizardError}
@@ -596,8 +635,7 @@ const FileUploadBlock = ({ label, name, accept, file, setFormData }) => {
         />
       </div>
 
-      {/* Empty Cell to Maintain Two-Column Grid */}
-      <div></div>
+     
 
       {/* Radios */}
       <div className="border rounded-lg p-3 bg-gray-50">
@@ -717,7 +755,7 @@ const FileUploadBlock = ({ label, name, accept, file, setFormData }) => {
     <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
       
       {/* Ticket Type */}
-      <div className="md:col-span-2 p-3 bg-gray-50 rounded-lg border border-gray-100">
+      <div className="md:col-span-1 p-3 bg-gray-50 rounded-lg border border-gray-100">
         <label className="block text-sm font-medium text-gray-900 mb-2 flex items-center gap-2">
           
           Ticket Type
@@ -745,7 +783,7 @@ const FileUploadBlock = ({ label, name, accept, file, setFormData }) => {
       </div>
 
       {/* Valet Fee Type */}
-      <div className="md:col-span-2 p-3 bg-gray-50 rounded-lg border border-gray-100">
+      <div className="md:col-span-1 p-3 bg-gray-50 rounded-lg border border-gray-100">
         <label className="block text-sm font-medium text-gray-900 mb-2 flex items-center gap-2">
          
           Valet Fee Type
@@ -989,7 +1027,7 @@ const FileUploadBlock = ({ label, name, accept, file, setFormData }) => {
      <input 
         type="tel"
         name="adminPhone"
-        placeholder="e.g., +971 52 123 4567"
+        placeholder="e.g., 971521234567"
         value={formData.adminPhone}
         onChange={(e) => {
           setFormData({ ...formData, adminPhone: e.target.value });
