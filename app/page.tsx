@@ -327,7 +327,7 @@ const FileUploadBlock = ({ label, name, accept, file, setFormData }) => {
     <img 
       src="/logo.png" // <-- change to your logo path
       alt="Valet Lead Logo"
-      className="w-20 sm:w-24 md:w-58 object-contain drop-shadow-md"
+      className="w-40 sm:w-34 md:w-58 object-contain drop-shadow-md"
     />
   </div>
 
@@ -340,7 +340,7 @@ const FileUploadBlock = ({ label, name, accept, file, setFormData }) => {
 
   {/* Main Heading */}
   <h1 className="flex flex-col sm:flex-row items-center justify-center gap-2 text-xl sm:text-2xl md:text-3xl font-semibold text-gray-900 leading-tight">
-    <CarFront className="w-7 h-8 sm:w-8 sm:h-8 text-[#ae5c83]" strokeWidth={2} />
+   
     <span className="text-center">Client Onboarding & Location Setup Form</span>
   </h1>
 
@@ -377,7 +377,7 @@ const FileUploadBlock = ({ label, name, accept, file, setFormData }) => {
             isActive
               ? "bg-[#ae5c83] text-white shadow-md border border-transparent scale-105"
               : isCompleted
-              ? "bg-green-100 text-green-700 border border-green-400 hover:bg-green-200"
+              ? "bg-green-00 text-gray-700 border border-gray-400 hover:bg-gray-200"
               : "bg-gray-100 text-gray-600 border border-gray-300 hover:bg-gray-200"
           }`}
         >
