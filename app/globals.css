@@ -91,7 +91,7 @@ body {
 /* Labels */
 .label {
   font-size: 14px;
-  font-weight: bold;
+  font-weight: lighter;
   color: #000;
   margin-bottom: 6px;
   font-family: var(--font-main);

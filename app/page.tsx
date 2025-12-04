@@ -66,7 +66,7 @@ const [errors, setErrors] = useState({
   documentSubmitMethod: ""
 });
 
-const validateBeforeJump = (targetStep) => {
+const validateBeforeJump = (targetStep: number) => {
   if (targetStep < currentStep) {
     setWizardError("");
     setCurrentStep(targetStep);
